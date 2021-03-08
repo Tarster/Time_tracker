@@ -1,16 +1,39 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-class Auth {
+
+class MyUser{
+  final String uid;
+  MyUser({@required this.uid});
+}
+
+abstract class AuthBase{
+  MyUser currentUser();
+  Future<MyUser> signInAnonymously();
+  Future<void> signOut();
+}
+
+class Auth implements AuthBase{
   final _firebaseAuth = FirebaseAuth.instance;
 
-  User currentUser() {
-    return _firebaseAuth.currentUser;
+  MyUser _userFromFirebase(User user){
+    if(user == null){
+      return null;
+    }
+    return MyUser(uid: user.uid);
   }
-  Future<User> signInAnonymously() async{
+  @override
+  MyUser currentUser() {
+    return _userFromFirebase(_firebaseAuth.currentUser);
+  }
+  @override
+  Future<MyUser> signInAnonymously() async{
     final authResult = await _firebaseAuth.signInAnonymously();
-    return authResult.user;
+    return _userFromFirebase(authResult.user);
   }
+  @override
   Future<void> signOut() async{
     await _firebaseAuth.signOut();
   }
+
+
 }
