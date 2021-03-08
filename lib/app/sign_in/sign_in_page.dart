@@ -5,10 +5,14 @@ import 'Social_sign_in_button.dart';
 
 class SignInPage extends StatelessWidget {
   void _signInAnonymously() async {
-    UserCredential userCredential = await FirebaseAuth.instance.signInAnonymously();
-    print('${userCredential.user.uid}');
+    try {
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInAnonymously();
+      print('${userCredential.user.uid}');
+    } catch (e) {
+      print(e.toString());
+    }
   }
-
 
   @override
   Widget build(BuildContext context) {
